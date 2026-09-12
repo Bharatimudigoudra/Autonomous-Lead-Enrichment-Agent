@@ -11,6 +11,7 @@ from llm_extractor import extract_lead
 from models import ContactPoints, LeadEnrichment
 from processor import build_llm_context
 from scraper import scrape_domains
+from search_enrichment import fill_linkedin_urls
 
 
 DEFAULT_DOMAINS = ["postman.com", "supabase.com", "vapi.ai"]
@@ -32,6 +33,7 @@ async def run(domains: list[str], output_path: str) -> None:
         try:
             context = build_llm_context(result.pages)
             item = extract_lead(result.domain, context, result.errors)
+            item = fill_linkedin_urls(item)
         except Exception as exc:
             # Record a failed domain and continue processing the rest.
             item = LeadEnrichment(

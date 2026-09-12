@@ -1,10 +1,11 @@
 [
   {
     "domain": "postman.com",
-    "company_overview": "Postman provides an AI-native API platform to develop, test, manage, and distribute APIs and services. It is built for engineers and designed for enterprise scale.",
+    "company_overview": "Postman is an AI\u2011native API platform that lets you develop, test, manage, and distribute APIs and services. It is built for engineers and designed for enterprise scale.",
     "target_audience": [
-      "individual developers",
-      "software engineering teams",
+      "engineers",
+      "individual API developers",
+      "API teams",
       "enterprise organizations"
     ],
     "contact_points": {
@@ -19,18 +20,14 @@
     "errors": [],
     "token_usage": {
       "prompt_tokens": 3347,
-      "completion_tokens": 596,
-      "total_tokens": 3943
+      "completion_tokens": 561,
+      "total_tokens": 3908
     }
   },
   {
     "domain": "supabase.com",
-    "company_overview": "Supabase provides a full Postgres database platform with authentication, edge functions, storage, realtime, vector search, and data APIs. It serves fast\u2011growing companies and developers building applications, offering open\u2011source tools and managed services.",
-    "target_audience": [
-      "Developers building web and mobile applications",
-      "Fast\u2011growing SaaS companies",
-      "Product teams needing backend services"
-    ],
+    "company_overview": "Supabase provides a full Postgres database with built\u2011in authentication, real\u2011time, storage, edge functions and vector search as an integrated backend platform. It enables developers to build and scale applications quickly without managing servers.",
+    "target_audience": [],
     "contact_points": {
       "public_emails": []
     },
@@ -42,8 +39,8 @@
     "errors": [],
     "token_usage": {
       "prompt_tokens": 3466,
-      "completion_tokens": 535,
-      "total_tokens": 4001
+      "completion_tokens": 524,
+      "total_tokens": 3990
     }
   },
   {
@@ -60,7 +57,7 @@
       {
         "name": "Jason Mitura",
         "role": "VP of Software Development",
-        "linkedin_url": null
+        "linkedin_url": "https://www.linkedin.com/in/jasonmitura"
       }
     ],
     "data_confidence_score": 0.7,
@@ -74,9 +71,9 @@
       "https://vapi.ai/contact: HTTP 404"
     ],
     "token_usage": {
-      "prompt_tokens": 5420,
-      "completion_tokens": 348,
-      "total_tokens": 5768
+      "prompt_tokens": 5433,
+      "completion_tokens": 354,
+      "total_tokens": 5787
     }
   }
 ]

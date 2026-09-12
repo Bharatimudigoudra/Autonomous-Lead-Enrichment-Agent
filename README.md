@@ -13,6 +13,10 @@ A small Python command-line project that visits company websites, cleans their r
 
 A bad page or domain is recorded in `errors`; it does not crash the full run.
 
+## Bonus: LinkedIn search enrichment (Tavily)
+
+After extraction, search_enrichment.py checks each leader for a missing LinkedIn URL. If TAVILY_API_KEY is set in .env, it searches LinkedIn through the Tavily API (queries like "name role company LinkedIn") and fills in the first linkedin.com/in/ match. If the key is missing or the search fails, the step is skipped and the pipeline still completes - resilience by design.
+
 ## Windows setup (PowerShell in VS Code)
 
 Install Python 3.11 or newer, open this folder in VS Code, then run:
@@ -25,15 +29,14 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-Open `.env` and replace the placeholder:
+Then create a file named `.env` and add:
 
 ```text
 GROQ_API_KEY=your_real_key_here
+TAVILY_API_KEY=your_key to .env
 ```
 
-Get a key from the Groq console. Do not commit or share `.env`.
-
-If PowerShell blocks activation, either use Command Prompt with `.venv\Scripts\activate.bat`, or run the virtual environment's Python directly. Administrator rights are not needed.
+Get a key from the 'Groq console' and 'tavily.com'. Do not commit or share `.env`.
 
 ## Run
 
