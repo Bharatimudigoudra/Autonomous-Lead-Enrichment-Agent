@@ -18,12 +18,11 @@ A bad page or domain is recorded in `errors`; it does not crash the full run.
 Install Python 3.11 or newer, open this folder in VS Code, then run:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+conda create -n GenAI python=3.11 -y
+conda activate GenAI
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 playwright install chromium
-Copy-Item .env.example .env
 ```
 
 Open `.env` and replace the placeholder:
