@@ -69,7 +69,11 @@ async def run(domains: list[str], output_path: str) -> None:
             )
         enriched.append(item)
 
-    destination = _next_available_path(Path(output_path))
+    raw = Path(output_path)
+    if raw.parent == Path("."):
+        # A bare filename (e.g. --output my_leads.json) belongs in output/.
+        raw = Path("output") / raw
+    destination = _next_available_path(raw)
     destination.write_text(
         json.dumps([item.model_dump(mode="json") for item in enriched], indent=2),
         encoding="utf-8",

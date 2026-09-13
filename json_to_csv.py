@@ -6,7 +6,9 @@ import sys
 
 
 def main() -> None:
-    source = sys.argv[1] if len(sys.argv) > 1 else "output.json"
+    source = sys.argv[1] if len(sys.argv) > 1 else "output/output.json"
+    if source == "output.json" and not __import__("pathlib").Path(source).exists():
+        source = "output/output.json"  # new default location
     destination = source.rsplit(".", 1)[0] + ".csv"
     records = json.loads(open(source, encoding="utf-8").read())
     rows = []

@@ -1,0 +1,79 @@
+[
+  {
+    "domain": "zoho.com",
+    "company_overview": "A unique and powerful software suite to transform the way you work. Designed for businesses of all sizes, built by a company that values your privacy.",
+    "target_audience": [
+      "Businesses of all sizes"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "sales@zohocorp.com",
+        "upgrade@zohocorp.com",
+        "renewal@zohocorp.com",
+        "cancellation@zohocorp.com",
+        "press@zohocorp.com",
+        "slo@zohocorp.com",
+        "nanya@zohocorp.com",
+        "julie.watson@eu.zohocorp.com",
+        "alejandro.g@zohocorp.com",
+        "jessica.loo@zohocorp.com",
+        "tetsuhiro.iwami@zohocorp.com",
+        "mengxue.li@zohocorp.com",
+        "pr@zohocorp.com",
+        "peterbalaji@zohocorp.com",
+        "cn-sales@zohocorp.com",
+        "sales@zoho.jp",
+        "support@zohoteaminbox.com",
+        "support@zohomail.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.9,
+    "source_urls": [
+      "https://www.zoho.com/",
+      "https://www.zoho.com/contactus.html?src=zGlobalTopMenu"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 3722,
+      "completion_tokens": 451,
+      "total_tokens": 4173
+    }
+  },
+  {
+    "domain": "freshworks.com",
+    "company_overview": "Freshworks provides AI\u2011powered employee service and customer support platforms for agile enterprises. Its unified suite helps teams resolve issues faster with less friction.",
+    "target_audience": [
+      "agile enterprises",
+      "business teams such as HR, Finance, and Legal",
+      "IT and service teams"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "support@freshworks.com",
+        "sales@freshworks.com",
+        "careers@freshworks.com",
+        "support@freshservice.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.7,
+    "source_urls": [
+      "https://www.freshworks.com/",
+      "https://www.freshworks.com/demo/",
+      "https://www.freshworks.com/products/",
+      "https://www.freshworks.com/freshservice/benchmark-report-2025/",
+      "https://www.freshworks.com/customers/stories/amerisure/",
+      "https://www.freshworks.com/customers/stories/mclaren-formula-1-team/",
+      "https://www.freshworks.com/customers/stories/new-balance/",
+      "https://www.freshworks.com/customers/stories/databricks/",
+      "https://www.freshworks.com/customers/stories/seagate/"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 3818,
+      "completion_tokens": 760,
+      "total_tokens": 4578
+    }
+  }
+]

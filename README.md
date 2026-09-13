@@ -35,7 +35,7 @@ autonomous-lead-enrichment-agent/
 ```bash
 pip install -r requirements.txt
 playwright install chromium
-cp .env.example .env   # then fill in your keys
+copy .env.example .env   # Windows - then fill in your keys
 ```
 
 Required environment variables (see `.env.example`):
@@ -49,8 +49,8 @@ Required environment variables (see `.env.example`):
 
 ```bash
 python main.py                                  # default 3 domains
-python main.py stripe.com notion.so             # any domains
-python main.py vapi.ai --output my_leads.json
+python main.py zoho.com freshworks.com          # try with any company domain names because can it handle other domains
+python main.py vapi.ai --output my_leads.json   # save the results with your own file names
 python json_to_csv.py output.json               # optional CSV export
 pytest -q                                       # run the test suite
 ```

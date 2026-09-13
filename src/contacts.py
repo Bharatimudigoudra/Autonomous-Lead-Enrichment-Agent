@@ -28,6 +28,9 @@ JUNK_LOCAL_PARTS = {
 }
 # Regex can catch emails inside image filenames and asset URLs.
 ASSET_TLDS = {"png", "jpg", "jpeg", "gif", "svg", "webp", "css", "js", "ico"}
+# Placeholder addresses from documentation and code samples on the page.
+DOC_HOSTS = {"example.com", "example.org", "example.net", "example.edu",
+             "yourdomain.com", "domain.com", "company.com", "email.com", "yourcompany.com", "yourcompanyco.com"}
 
 
 def find_emails(pages: dict[str, str]) -> list[str]:
@@ -44,6 +47,11 @@ def find_emails(pages: dict[str, str]) -> list[str]:
             local, _, host = email.partition("@")
             tld = host.rsplit(".", 1)[-1]
             if local in JUNK_LOCAL_PARTS or tld in ASSET_TLDS:
+                continue
+            if host in DOC_HOSTS or "example" in local:
+                continue
+            # Docs artifacts like rich_text_link_team@... are not mailboxes.
+            if local.count("_") >= 2:
                 continue
             if email not in found:
                 found.append(email)

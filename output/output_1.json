@@ -1,0 +1,57 @@
+[
+  {
+    "domain": "stripe.com",
+    "company_overview": "Stripe provides financial infrastructure to help businesses accept payments, offer financial services, and implement custom revenue models. It powers global commerce with a suite of tools for payments, billing, risk management, and developer integrations.",
+    "target_audience": [
+      "Businesses of all sizes",
+      "Enterprises",
+      "Developers"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "jane.diaz@stripe.com",
+        "sales@stripe.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.7,
+    "source_urls": [
+      "https://stripe.com/in"
+    ],
+    "errors": [
+      "https://stripe.com/company: HTTP 404"
+    ],
+    "token_usage": {
+      "prompt_tokens": 3597,
+      "completion_tokens": 499,
+      "total_tokens": 4096
+    }
+  },
+  {
+    "domain": "notion.so",
+    "company_overview": "Notion is an AI\u2011powered workspace that lets teams organize, collaborate, and automate work in one place. It serves over 100\u202fmillion users across more than 50 countries, including many Fortune\u202f100 companies.",
+    "target_audience": [
+      "Individuals",
+      "Small teams and professionals",
+      "Growing businesses",
+      "Enterprises"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "team@makenotion.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.9,
+    "source_urls": [
+      "https://www.notion.com/",
+      "https://www.notion.com/pricing"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 4705,
+      "completion_tokens": 485,
+      "total_tokens": 5190
+    }
+  }
+]
