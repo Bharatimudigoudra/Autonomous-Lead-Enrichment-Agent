@@ -54,16 +54,6 @@ Choose domains or an output filename:
 python main.py stripe.com notion.so --output my_leads.json
 ```
 
-## Generate the real `sample_output.json`
-
-The included `sample_output.json` is deliberately marked as example-format data because no API key is stored in this project. After adding your own key, generate genuine results for the required domains with:
-
-```powershell
-python main.py postman.com supabase.com vapi.ai --output sample_output.json
-```
-
-Review the file before submitting it. Website content changes, so output can vary between runs.
-
 ## Files
 
 - `main.py`: reads command-line arguments, runs the pipeline, catches per-domain failures, and saves JSON.
@@ -72,8 +62,8 @@ Review the file before submitting it. Website content changes, so output can var
 - `llm_extractor.py`: calls Groq in JSON mode and validates the response.
 - `models.py`: defines the required data shape and confidence limits.
 - `requirements.txt`: pins the Python packages.
-- `.env.example`: shows the required environment variable without exposing a key.
-- `sample_output.json`: example shape only until regenerated with a real key.
+- `.env`: shows the required environment variable without exposing a key.
+- `search_enrichment.py`: uses Tavily search to fill in LinkedIn profile URLs for leaders the website didn't link.
 
 ## Design choices and limitations
 
