@@ -4,9 +4,9 @@ from src.models import LeadEnrichment, LeadershipPerson
 
 def test_find_emails_filters_junk(sample_pages):
     emails = find_emails(sample_pages)
-    assert "hello@example.com" in emails
-    assert "abuse@example.com" not in emails
-    assert "privacy@example.com" not in emails
+    assert "hello@exampleco.com" in emails
+    assert "abuse@exampleco.com" not in emails
+    assert "privacy@exampleco.com" not in emails
 
 
 def test_find_linkedin_profiles(sample_pages):
@@ -22,7 +22,7 @@ def test_enrich_contacts_fills_email_and_matches_leader(sample_pages):
         key_leadership=[LeadershipPerson(name="Jane Doe", role="CEO")],
     )
     out = enrich_contacts(item, sample_pages)
-    assert "hello@example.com" in out.contact_points.public_emails
+    assert "hello@exampleco.com" in out.contact_points.public_emails
     assert str(out.key_leadership[0].linkedin_url).rstrip("/") == "https://www.linkedin.com/in/janedoe"
 
 

@@ -1,16 +1,10 @@
-"""Convert output.json into a flat CSV for quick review in Excel/Sheets."""
+"""Shared CSV writer: flattens enriched records for Excel/Sheets review."""
 
 import csv
-import json
-import sys
 
 
-def main() -> None:
-    source = sys.argv[1] if len(sys.argv) > 1 else "output/output.json"
-    if source == "output.json" and not __import__("pathlib").Path(source).exists():
-        source = "output/output.json"  # new default location
-    destination = source.rsplit(".", 1)[0] + ".csv"
-    records = json.loads(open(source, encoding="utf-8").read())
+def write_csv(records: list[dict], destination) -> int:
+    """Write enriched records (as plain dicts) to a flat CSV file."""
     rows = []
     for r in records:
         rows.append({
@@ -29,8 +23,4 @@ def main() -> None:
         writer = csv.DictWriter(fh, fieldnames=rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
-    print(f"Wrote {len(rows)} rows to {destination}")
-
-
-if __name__ == "__main__":
-    main()
+    return len(rows)

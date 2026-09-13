@@ -1,7 +1,9 @@
 playwright==1.55.0
 groq==0.31.0
 pydantic==2.11.7
+pytest==8.3.3
 python-dotenv==1.1.1
 beautifulsoup4==4.13.4
 markdownify==1.2.0
 tavily-python==0.7.0
+langgraph>=0.2

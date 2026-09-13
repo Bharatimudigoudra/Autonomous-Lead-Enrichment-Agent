@@ -1,17 +1,71 @@
 # Autonomous Lead Enrichment Agent
 
-Turns a list of company domains into structured, validated lead records:
-company overview, target audience, public contact emails, key leadership with
-LinkedIn profiles, a data-confidence score, source URLs, per-domain errors,
-and token usage for every domain.
+An autonomous agent that takes any company website, crawls it like a human would, and returns a structured, validated lead records: company overview, target audience, public contact emails, key leadership with LinkedIn profiles, a data-confidence score, source URLs, per-domain errors, and token usage for every domain.
 
-## Project structure
+The pipeline is orchestrated with **LangGraph** - crawl, extract, self-retry and write run as explicit graph nodes, so the control flow is inspectable and easy to extend.
+
+## Why this project
+
+Sales and recruiting teams spend hours manually researching companies. This agent collapses that to one command: point it at a URL, get back decision-ready lead data. Built to demonstrate agentic AI skills: multi-step planning, tool use, structured LLM extraction, self-correction on failure, and observable, cost-tracked runs.
+
+## Features
+
+- **Dynamic web crawling** - Playwright (headless Chromium) renders JavaScript-heavy sites and navigates multi-page flows, not just static HTML
+- **LangGraph orchestration** - the pipeline is an explicit state graph (crawl -> extract -> conditional retry -> write), so control flow is inspectable and extensible
+- **Structured LLM extraction** - Groq-hosted open models (gpt-oss-120b) extract a typed lead record; output is validated against Pydantic models
+- **Self-correction** - failed or empty extractions are retried automatically via a conditional graph edge; persistent failures are recorded honestly in an `errors` field instead of crashing the run
+- **Dual output formats** - every run writes JSON and/or CSV (`--format json|csv|both`), with auto-numbered filenames to avoid overwriting
+- **Cost observability** - token usage per run is logged so LLM spend is visible, not a black box
+
+## Workflow Architecture
+
+```
+                         +-------------------+
+   target URL ---------> |   CRAWL NODE      |
+   (CLI arg)             |  Playwright headless browser
+                         |  renders pages, follows links,
+                         |  collects visible text + links
+                         +---------+---------+
+                                   |  state.raw_pages
+                                   v
+                         +-------------------+
+                         |   EXTRACT NODE    |
+                         |  Groq LLM (gpt-oss-120b)
+                         |  structured extraction ->
+                         |  validated Pydantic lead record
+                         +---------+---------+
+                                   |
+                         +---------v---------+
+                         |  ROUTER (pure)    |<------------------+
+                         |  extraction ok?   |                   |
+                         +--+-----------+----+                   |
+                    success |           | failed / empty          |
+                            |           | retries left            |
+                            |           +-------------------------+
+                            v                        (loop back to EXTRACT)
+                         +-------------------+
+                         |   WRITE NODE      |
+                         |  scripts/json_export.py -> output.json
+                         |  scripts/csv_export.py  -> output.csv
+                         |  errors recorded if retries exhausted
+                         +-------------------+
+```
+
+Each run is a single LangGraph `StateGraph` execution:
+
+1. **crawl** - Playwright fetches and renders the target site, gathering text and candidate links
+2. **extract** - the LLM converts page text into a validated `LeadRecord` (Pydantic schema)
+3. **should_retry** (conditional edge) - pure routing function; on failure with retries remaining, control loops back to `extract`
+4. **write** - results are exported to JSON and/or CSV; unrecoverable failures produce a placeholder record carrying the real error list
+
+## Project Structure
 
 ```
 autonomous-lead-enrichment-agent/
 ├── main.py                      # entry point: takes domain list, runs the pipeline
 ├── src/
 │   ├── __init__.py
+│   ├── graph.py                 # LangGraph StateGraph: crawl -> extract -> retry -> write
 │   ├── crawler.py               # Playwright browsing + subpage discovery
 │   ├── cleaner.py               # HTML -> markdown, boilerplate stripping
 │   ├── extractor.py             # LLM structured extraction (Groq JSON mode + Pydantic)
@@ -19,10 +73,12 @@ autonomous-lead-enrichment-agent/
 │   ├── contacts.py              # deterministic email/LinkedIn regex pass over raw HTML
 │   ├── search.py                # Tavily LinkedIn backfill (bonus)
 │   └── cost.py                  # token + $ cost tracking per run
+├── scripts/
+│   ├── json_export.py           # JSON writer (+ auto-numbered filenames)
+│   └── csv_export.py            # CSV writer (flat records)
 ├── tests/                       # pytest suite (13 tests)
 ├── output/
-│   └── sample_output.json       # real run on the 3 target domains
-├── json_to_csv.py               # converts output.json to a flat CSV
+│   └── output.json              # real run on the 3 target domains
 ├── .env.example                 # GROQ_API_KEY / TAVILY_API_KEY (+ optional price vars)
 ├── .gitignore
 ├── pytest.ini
@@ -33,58 +89,61 @@ autonomous-lead-enrichment-agent/
 ## Setup
 
 ```bash
+git clone https://github.com/Bharatimudigoudra/Autonomous-Lead-Enrichment-Agent.git
+cd Autonomous-Lead-Enrichment-Agent
 pip install -r requirements.txt
 playwright install chromium
-copy .env.example .env   # Windows - then fill in your keys
 ```
 
-Required environment variables (see `.env.example`):
+*Set your API keys*
 
-- `GROQ_API_KEY` - free key from console.groq.com
-- `TAVILY_API_KEY` - optional; enables the LinkedIn backfill bonus
-- `GROQ_PRICE_PER_1M_PROMPT` / `GROQ_PRICE_PER_1M_COMPLETION` - optional;
-  when set, the run summary also prints an estimated dollar cost
+Copy .env.example to a new file named .env and fill in the values:
 
-## Run
+- `GROQ_API_KEY` - required. Get a free key at console.groq.com
+- `TAVILY_API_KEY` - optional. Enables the LinkedIn backfill bonus
+- `GROQ_PRICE_PER_1M_PROMPT` / `GROQ_PRICE_PER_1M_COMPLETION` - optional. When set, the run summary also prints the estimated dollar cost
+
+
+## Usage
 
 ```bash
-python main.py                                  # default 3 domains
-python main.py zoho.com freshworks.com          # try with any company domain names because can it handle other domains
-python main.py vapi.ai --output my_leads.json   # save the results with your own file names
-python json_to_csv.py output.json               # optional CSV export
-pytest -q                                       # run the test suite
+# Default: JSON + CSV, auto-named output
+python main.py --url https://stripe.com
+
+# JSON only
+python main.py --url https://stripe.com --format json
+
+# CSV only, custom filename (extension added automatically)
+python main.py --url https://stripe.com --format csv --output my_leads
 ```
 
-## Design choices
+## Output
 
-- **Playwright, not requests**: most company sites render content with
-  JavaScript, so a real headless browser is used. Each domain gets its own
-  browser context for isolation.
-- **Small LLM context**: the crawler keeps at most 6 pages per domain and the
-  cleaner strips scripts, nav, footers and cookie banners before capping the
-  context at 12k characters - this keeps token usage (and cost) predictable.
-- **Deterministic contacts, LLM for judgment**: emails and LinkedIn links are
-  verbatim facts on the page, so `contacts.py` reads them directly with regex
-  and filters junk (`abuse@`, `privacy@`, asset-file false positives). The LLM
-  is only asked for judgment work - overview, audience, leadership names -
-  which removes a whole class of hallucinated contact data.
-- **Validated output**: every LLM response is parsed as strict JSON and
-  validated with Pydantic (confidence bounded 0-1, normalized emails). A bad
-  response or a crashed domain produces a fallback record with
-  `data_confidence_score: 0.0` and the reason in `errors` - one broken site
-  never stops the batch.
-- **Honest provenance**: each record carries the exact `source_urls` it was
-  built from, the fetch `errors` encountered, and real `token_usage` from the
-  API response. Cost in dollars is only reported when prices are configured -
-  never invented.
-- **Bonus: Tavily LinkedIn backfill**: when leadership names exist but the
-  site doesn't link their profiles, `search.py` searches LinkedIn via Tavily
-  and fills the URLs (validated as proper URLs before saving).
+**JSON** - one record per run: company profile, industry, offerings, contact signals, source URLs, token usage, and an `errors` array when retries were exhausted.
 
-## Limitations
+**CSV** - flat row-per-record export for spreadsheets and CRM import.
 
-- JavaScript-heavy sites that block headless browsers return few or no pages;
-  those domains land in `errors` with a low confidence score.
-- Leadership extraction depends on companies actually publishing team info;
-  many don't, so `key_leadership` is legitimately empty for some domains.
-- The regex email pass can only find addresses companies chose to publish.
+## Error Handling
+
+The agent never dies silently:
+
+- transient extraction failures trigger an automatic retry through the graph's conditional edge
+- persistent failures (rate limits, unreachable sites) are captured in the record's `errors` field with the real exception text
+- token budgets are logged per run so quota exhaustion is diagnosable from the output itself
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Orchestration | LangGraph (StateGraph, conditional edges) |
+| Browser | Playwright (headless Chromium) |
+| LLM | Groq - openai/gpt-oss-120b |
+| Validation | Pydantic |
+| Language | Python 3.11+ |
+
+## Roadmap
+
+- [ ] Batch mode: crawl a list of URLs in one run
+- [ ] Contact verification via public email patterns
+- [ ] Streamlit dashboard for non-CLI users
+
