@@ -1,9 +1,15 @@
+"""Bonus step: fill missing LinkedIn URLs for leaders using Tavily search.
+
+If TAVILY_API_KEY is not set, this step quietly does nothing.
+"""
+
 import os
 
 from pydantic import HttpUrl, TypeAdapter
 from tavily import TavilyClient
 
-from models import LeadEnrichment, LeadershipPerson
+from src.contacts import _profile_matches_person
+from src.models import LeadEnrichment, LeadershipPerson
 
 _HTTP_URL = TypeAdapter(HttpUrl)
 
@@ -18,7 +24,11 @@ def _search_linkedin(client: TavilyClient, person: LeadershipPerson, domain: str
         return None
     for hit in result.get("results", []):
         url = hit.get("url", "")
-        if "linkedin.com/in/" in url:
+        if "linkedin.com/in/" not in url:
+            continue
+        # Search engines can return a teammate's profile for a name query.
+        # Only accept a profile whose slug contains the person's surname.
+        if _profile_matches_person(person, url):
             return url
     return None
 

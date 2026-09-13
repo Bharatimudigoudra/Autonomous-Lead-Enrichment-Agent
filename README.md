@@ -1,84 +1,90 @@
 # Autonomous Lead Enrichment Agent
 
-A small Python command-line project that visits company websites, cleans their rendered content, and asks Groq to return validated lead data.
+Turns a list of company domains into structured, validated lead records:
+company overview, target audience, public contact emails, key leadership with
+LinkedIn profiles, a data-confidence score, source URLs, per-domain errors,
+and token usage for every domain.
 
-## What it does
+## Project structure
 
-1. Opens each homepage with headless Chromium through Playwright.
-2. Discovers relevant same-site links and also tries `/about`, `/team`, `/company`, `/contact`, and `/pricing`.
-3. Removes scripts, CSS, SVG, navigation, footers, forms, cookie popups, and other page chrome.
-4. Converts only the useful page body to clean Markdown. Raw HTML is never sent to Groq.
-5. Calls `llama-3.3-70b-versatile` with JSON mode and validates the result with Pydantic.
-6. Writes one JSON record per domain, including scrape errors and token usage.
+```
+autonomous-lead-enrichment-agent/
+├── main.py                      # entry point: takes domain list, runs the pipeline
+├── src/
+│   ├── __init__.py
+│   ├── crawler.py               # Playwright browsing + subpage discovery
+│   ├── cleaner.py               # HTML -> markdown, boilerplate stripping
+│   ├── extractor.py             # LLM structured extraction (Groq JSON mode + Pydantic)
+│   ├── models.py                # Pydantic schemas (spec-exact field names)
+│   ├── contacts.py              # deterministic email/LinkedIn regex pass over raw HTML
+│   ├── search.py                # Tavily LinkedIn backfill (bonus)
+│   └── cost.py                  # token + $ cost tracking per run
+├── tests/                       # pytest suite (13 tests)
+├── output/
+│   └── sample_output.json       # real run on the 3 target domains
+├── json_to_csv.py               # converts output.json to a flat CSV
+├── .env.example                 # GROQ_API_KEY / TAVILY_API_KEY (+ optional price vars)
+├── .gitignore
+├── pytest.ini
+├── requirements.txt
+└── README.md
+```
 
-A bad page or domain is recorded in `errors`; it does not crash the full run.
+## Setup
 
-## Bonus: LinkedIn search enrichment (Tavily)
-
-After extraction, search_enrichment.py checks each leader for a missing LinkedIn URL. If TAVILY_API_KEY is set in .env, it searches LinkedIn through the Tavily API (queries like "name role company LinkedIn") and fills in the first linkedin.com/in/ match. If the key is missing or the search fails, the step is skipped and the pipeline still completes - resilience by design.
-
-## Windows setup (PowerShell in VS Code)
-
-Install Python 3.11 or newer, open this folder in VS Code, then run:
-
-```powershell
-conda create -n GenAI python=3.11 -y
-conda activate GenAI
-python -m pip install --upgrade pip
+```bash
 pip install -r requirements.txt
 playwright install chromium
+cp .env.example .env   # then fill in your keys
 ```
 
-Then create a file named `.env` and add:
+Required environment variables (see `.env.example`):
 
-```text
-GROQ_API_KEY=your_real_key_here
-TAVILY_API_KEY=your_key to .env
-```
-
-Get a key from the 'Groq console' and 'tavily.com'. Do not commit or share `.env`.
+- `GROQ_API_KEY` - free key from console.groq.com
+- `TAVILY_API_KEY` - optional; enables the LinkedIn backfill bonus
+- `GROQ_PRICE_PER_1M_PROMPT` / `GROQ_PRICE_PER_1M_COMPLETION` - optional;
+  when set, the run summary also prints an estimated dollar cost
 
 ## Run
 
-Run the three assignment domains:
-
-```powershell
-python main.py
+```bash
+python main.py                                  # default 3 domains
+python main.py stripe.com notion.so             # any domains
+python main.py vapi.ai --output my_leads.json
+python json_to_csv.py output.json               # optional CSV export
+pytest -q                                       # run the test suite
 ```
 
-This writes `output.json`.
+## Design choices
 
-Choose domains or an output filename:
+- **Playwright, not requests**: most company sites render content with
+  JavaScript, so a real headless browser is used. Each domain gets its own
+  browser context for isolation.
+- **Small LLM context**: the crawler keeps at most 6 pages per domain and the
+  cleaner strips scripts, nav, footers and cookie banners before capping the
+  context at 12k characters - this keeps token usage (and cost) predictable.
+- **Deterministic contacts, LLM for judgment**: emails and LinkedIn links are
+  verbatim facts on the page, so `contacts.py` reads them directly with regex
+  and filters junk (`abuse@`, `privacy@`, asset-file false positives). The LLM
+  is only asked for judgment work - overview, audience, leadership names -
+  which removes a whole class of hallucinated contact data.
+- **Validated output**: every LLM response is parsed as strict JSON and
+  validated with Pydantic (confidence bounded 0-1, normalized emails). A bad
+  response or a crashed domain produces a fallback record with
+  `data_confidence_score: 0.0` and the reason in `errors` - one broken site
+  never stops the batch.
+- **Honest provenance**: each record carries the exact `source_urls` it was
+  built from, the fetch `errors` encountered, and real `token_usage` from the
+  API response. Cost in dollars is only reported when prices are configured -
+  never invented.
+- **Bonus: Tavily LinkedIn backfill**: when leadership names exist but the
+  site doesn't link their profiles, `search.py` searches LinkedIn via Tavily
+  and fills the URLs (validated as proper URLs before saving).
 
-```powershell
-python main.py stripe.com notion.so --output my_leads.json
-```
+## Limitations
 
-## Files
-
-- `main.py`: reads command-line arguments, runs the pipeline, catches per-domain failures, and saves JSON.
-- `scraper.py`: uses Playwright to render the homepage and useful subpages.
-- `processor.py`: removes noisy HTML and converts the useful content to Markdown.
-- `llm_extractor.py`: calls Groq in JSON mode and validates the response.
-- `models.py`: defines the required data shape and confidence limits.
-- `requirements.txt`: pins the Python packages.
-- `.env`: shows the required environment variable without exposing a key.
-- `search_enrichment.py`: uses Tavily search to fill in LinkedIn profile URLs for leaders the website didn't link.
-
-## Design choices and limitations
-
-- The scraper processes domains one at a time. This is slower than a complex parallel crawler, but easier to explain and gentler on websites.
-- It keeps the homepage plus at most five subpages and caps cleaned input at 60,000 characters to control token use.
-- Token counts are recorded from Groq. Exact currency cost is not calculated because free-tier limits and prices can change.
-- `vapi.ai` and similar sites are JavaScript-heavy. Playwright renders JavaScript, waits briefly for network idle, and continues after a bounded wait if background requests never stop.
-- Bot protection can still block an automated browser. The domain gets an error record instead of stopping the run.
-- Public emails, leaders, and LinkedIn links are included only when the supplied page text supports them. Missing facts remain empty rather than being guessed.
-- The model is asked for exactly two overview sentences. Pydantic validates types and ranges, while the prompt controls the sentence count.
-
-## 2-3 minute walkthrough outline
-
-1. Show `main.py`: domains come in, scraping runs, every result is cleaned and extracted, then JSON is saved.
-2. Show `scraper.py`: a real headless browser loads JavaScript pages and finds relevant links.
-3. Show `processor.py`: noisy tags are removed before Markdown conversion, so Groq never receives raw HTML.
-4. Show `models.py` and `llm_extractor.py`: Groq returns JSON, Pydantic checks the structure, and usage tokens are saved.
-5. Run `python main.py postman.com` and open `output.json`. Point out `source_urls`, `errors`, confidence, and token usage.
+- JavaScript-heavy sites that block headless browsers return few or no pages;
+  those domains land in `errors` with a low confidence score.
+- Leadership extraction depends on companies actually publishing team info;
+  many don't, so `key_leadership` is legitimately empty for some domains.
+- The regex email pass can only find addresses companies chose to publish.

@@ -1,0 +1,26 @@
+{
+  "note": "EXAMPLE FORMAT ONLY. This is not live output. Run python main.py --output sample_output.json with your GROQ_API_KEY to replace it with real results.",
+  "example_record": {
+    "domain": "example.com",
+    "company_overview": "Example Company provides a sample software product. It helps teams demonstrate the expected output structure.",
+    "target_audience": ["software teams"],
+    "contact_points": {
+      "public_emails": ["hello@example.com"]
+    },
+    "key_leadership": [
+      {
+        "name": "Example Person",
+        "role": "Founder",
+        "linkedin_url": null
+      }
+    ],
+    "data_confidence_score": 0.75,
+    "source_urls": ["https://example.com/", "https://example.com/about"],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 1200,
+      "completion_tokens": 250,
+      "total_tokens": 1450
+    }
+  }
+}

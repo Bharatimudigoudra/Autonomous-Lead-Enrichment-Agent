@@ -6,7 +6,7 @@ import os
 from groq import Groq
 from pydantic import ValidationError
 
-from models import LeadEnrichment
+from src.models import LeadEnrichment
 
 
 MODEL = "openai/gpt-oss-120b"
