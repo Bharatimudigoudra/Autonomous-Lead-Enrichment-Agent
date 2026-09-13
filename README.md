@@ -107,14 +107,17 @@ Copy .env.example to a new file named .env and fill in the values:
 ## Usage
 
 ```bash
-# Default: JSON + CSV, auto-named output
-python main.py --url https://stripe.com
+# default 3 domains
+python main.py
 
-# JSON only
-python main.py --url https://stripe.com --format json
+# try with any company domain names
+python main.py zoho.com freshworks.com
 
-# CSV only, custom filename (extension added automatically)
-python main.py --url https://stripe.com --format csv --output my_leads
+# save the results with custom filename (extension added automatically) and specified format
+python main.py vapi.ai --output my_file_1 --format json
+
+# run the test suite (optional)
+pytest -q
 ```
 
 ## Output
