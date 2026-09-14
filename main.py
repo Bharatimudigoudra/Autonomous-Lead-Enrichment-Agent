@@ -14,7 +14,6 @@ from src.cost import summarize_cost
 
 DEFAULT_DOMAINS = ["postman.com", "supabase.com", "vapi.ai"]
 
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Enrich company domains from their websites.")
     parser.add_argument("domains", nargs="*", default=DEFAULT_DOMAINS)

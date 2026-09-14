@@ -114,7 +114,7 @@ python main.py
 python main.py zoho.com freshworks.com
 
 # save the results with custom filename (extension added automatically) and specified format
-python main.py vapi.ai --output my_file_1 --format json
+python main.py vapi.ai --output my_file --format json
 
 # run the test suite (optional)
 pytest -q
