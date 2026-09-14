@@ -1,26 +1,90 @@
-{
-  "note": "EXAMPLE FORMAT ONLY. This is not live output. Run python main.py --output sample_output.json with your GROQ_API_KEY to replace it with real results.",
-  "example_record": {
-    "domain": "example.com",
-    "company_overview": "Example Company provides a sample software product. It helps teams demonstrate the expected output structure.",
-    "target_audience": ["software teams"],
+[
+  {
+    "domain": "postman.com",
+    "company_overview": "Postman provides an AI\u2011native API platform to develop, test, manage, and distribute APIs and services. It is built for engineers and designed for enterprise scale.",
+    "target_audience": [
+      "individual developers",
+      "software development teams",
+      "large enterprises"
+    ],
     "contact_points": {
-      "public_emails": ["hello@example.com"]
+      "public_emails": [
+        "info@postman.com",
+        "info-jp@postman.com",
+        "help@postman.com",
+        "accommodations@postman.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.7,
+    "source_urls": [
+      "https://www.postman.com/",
+      "https://www.postman.com/pricing/"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 3347,
+      "completion_tokens": 515,
+      "total_tokens": 3862
+    }
+  },
+  {
+    "domain": "supabase.com",
+    "company_overview": "Supabase provides an open\u2011source backend platform with a full Postgres database, authentication, storage, real\u2011time sync, and edge functions. It enables developers to build scalable web and mobile applications quickly without managing servers.",
+    "target_audience": [
+      "Developers building web and mobile applications",
+      "SaaS startups and fast\u2011growing companies",
+      "Enterprises needing real\u2011time data and authentication"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "help-events@supabase.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.6,
+    "source_urls": [
+      "https://supabase.com/"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 3466,
+      "completion_tokens": 436,
+      "total_tokens": 3902
+    }
+  },
+  {
+    "domain": "vapi.ai",
+    "company_overview": "Vapi provides a platform for building, deploying, and managing voice agents. It offers orchestration, real\u2011time monitoring, and enterprise\u2011grade configurability for scalable voice applications.",
+    "target_audience": [
+      "software developers",
+      "product teams building voice assistants",
+      "enterprises needing automated phone support"
+    ],
+    "contact_points": {
+      "public_emails": []
     },
     "key_leadership": [
       {
-        "name": "Example Person",
-        "role": "Founder",
-        "linkedin_url": null
+        "name": "Jason Mitura",
+        "role": "VP of Software Development",
+        "linkedin_url": "https://www.linkedin.com/in/jasonmitura"
       }
     ],
-    "data_confidence_score": 0.75,
-    "source_urls": ["https://example.com/", "https://example.com/about"],
-    "errors": [],
+    "data_confidence_score": 0.7,
+    "source_urls": [
+      "https://vapi.ai/"
+    ],
+    "errors": [
+      "https://vapi.ai/about: HTTP 404",
+      "https://vapi.ai/team: HTTP 404",
+      "https://vapi.ai/company: HTTP 404",
+      "https://vapi.ai/contact: HTTP 404"
+    ],
     "token_usage": {
-      "prompt_tokens": 1200,
-      "completion_tokens": 250,
-      "total_tokens": 1450
+      "prompt_tokens": 5435,
+      "completion_tokens": 349,
+      "total_tokens": 5784
     }
   }
-}
+]
