@@ -8,7 +8,7 @@ The pipeline is orchestrated with **LangGraph** - crawl, extract, self-retry and
 
 Sales and recruiting teams spend hours manually researching companies. This agent collapses that to one command: point it at a URL, get back decision-ready lead data. Built to demonstrate agentic AI skills: multi-step planning, tool use, structured LLM extraction, self-correction on failure, and observable, cost-tracked runs.
 
-## Feature
+## Features
 
 - **Dynamic web crawling** - Playwright (headless Chromium) renders JavaScript-heavy sites and navigates multi-page flows, not just static HTML
 - **LangGraph orchestration** - the pipeline is an explicit state graph (crawl -> extract -> conditional retry -> write), so control flow is inspectable and extensible
