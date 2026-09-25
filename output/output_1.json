@@ -1,0 +1,90 @@
+[
+  {
+    "domain": "postman.com",
+    "company_overview": "Postman provides an AI\u2011native API platform to develop, test, manage, and distribute APIs and services. It is built for engineers and designed for enterprise scale.",
+    "target_audience": [
+      "individual API developers",
+      "API teams",
+      "enterprise organizations"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "info@postman.com",
+        "info-jp@postman.com",
+        "help@postman.com",
+        "accommodations@postman.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.8,
+    "source_urls": [
+      "https://www.postman.com/",
+      "https://www.postman.com/pricing/"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 3347,
+      "completion_tokens": 499,
+      "total_tokens": 3846
+    }
+  },
+  {
+    "domain": "supabase.com",
+    "company_overview": "Supabase provides an open\u2011source backend platform that includes a full Postgres database, authentication, storage, real\u2011time sync, and edge functions. It lets developers build and scale web, mobile and AI applications without managing servers.",
+    "target_audience": [
+      "Developers building web and mobile applications",
+      "Startups and SaaS companies needing a scalable backend",
+      "AI/ML teams requiring vector search and data APIs"
+    ],
+    "contact_points": {
+      "public_emails": [
+        "help-events@supabase.com"
+      ]
+    },
+    "key_leadership": [],
+    "data_confidence_score": 0.6,
+    "source_urls": [
+      "https://supabase.com/"
+    ],
+    "errors": [],
+    "token_usage": {
+      "prompt_tokens": 3466,
+      "completion_tokens": 429,
+      "total_tokens": 3895
+    }
+  },
+  {
+    "domain": "vapi.ai",
+    "company_overview": "Vapi provides a platform for building, deploying, and managing voice AI agents that can be customized and scaled. It offers orchestration, real\u2011time monitoring, and extensive integrations for enterprise\u2011grade voice applications.",
+    "target_audience": [
+      "software developers",
+      "product teams building voice assistants",
+      "enterprises needing automated phone support"
+    ],
+    "contact_points": {
+      "public_emails": []
+    },
+    "key_leadership": [
+      {
+        "name": "Jason Mitura",
+        "role": "VP of Software Development",
+        "linkedin_url": "https://www.linkedin.com/in/jasonmitura"
+      }
+    ],
+    "data_confidence_score": 0.7,
+    "source_urls": [
+      "https://vapi.ai/"
+    ],
+    "errors": [
+      "https://vapi.ai/about: HTTP 404",
+      "https://vapi.ai/team: HTTP 404",
+      "https://vapi.ai/company: HTTP 404",
+      "https://vapi.ai/contact: HTTP 404"
+    ],
+    "token_usage": {
+      "prompt_tokens": 5306,
+      "completion_tokens": 364,
+      "total_tokens": 5670
+    }
+  }
+]
